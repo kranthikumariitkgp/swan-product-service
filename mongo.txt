@@ -1,0 +1,17 @@
+# db creation
+use swan-service
+
+# db-user creation
+db.createUser(
+  {
+    user: "swanUsername",
+    pwd:  "Test@123",
+    roles: [ { role: "readWrite", db: "swan-service" } ]
+  }
+)
+# collection creation
+db.createCollection("product")
+db.createCollection("review")
+
+# use below command to maintain unique barcode in product collection
+db.product.createIndex({ "barcode": 1 }, { unique: true })

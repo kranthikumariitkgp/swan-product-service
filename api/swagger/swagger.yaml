@@ -1,0 +1,175 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Swan Micro Services
+host: localhost:3001
+basePath: /
+schemes:
+  - http
+  - https
+produces:
+  - application/json
+paths:
+  /products:
+    x-swagger-router-controller: productController
+    post:
+      description: used to create products
+      operationId: createProduct
+      consumes:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessCreation"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products/review:
+    x-swagger-router-controller: productController
+    post:
+      description: used to create products
+      operationId: reviewProduct
+      consumes:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/ReviewProductRequest'
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SuccessCreation"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /products/search:
+    x-swagger-router-controller: productController
+    post:
+      description: used to search products
+      operationId: searchProduct
+      consumes:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          required: true
+          type: string
+          description: query param for page
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SearchProductRequest'
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/SearchProductResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+parameters:
+  AuthorizationHeader:
+    in: header
+    name: authorization
+    required: true
+    type: string
+    description: Token for authorization
+
+definitions:
+  SuccessCreation:
+     type: object
+     properties:
+      message:
+        type: string
+        example: Succesfully stored to database.
+  SearchProductRequest:
+    required:
+      - searchText
+    type: object
+    properties:
+      searchText:
+        type: string
+        example: kranthi
+  SearchProductResponse:
+    type: object
+    properties:
+      totalCount: 
+        type: "number"
+        example: 2
+      products: 
+        type: "array"
+        items: 
+          type: "object"
+          properties: 
+            available: 
+              type: "boolean"
+              example: true
+            barcode: 
+              type: "number"
+              example: 1234
+            brand: 
+              type: "string"
+              example: "xyz"
+            description: 
+              type: "string"
+              example: "sample description"
+            id: 
+              type: "string"
+              example: "5fde6b61c733ef2b67c297d6"
+            name: 
+              type: "string"
+              example: "kranthi"
+            price: 
+              type: "number"
+              example: 123
+            reviews: 
+              type: "array"
+              items: 
+                type: "object"
+                properties: 
+                  _id: 
+                    type: "string"
+                    example: "5fdee45c80378036ec2e99c1"
+                  barcode: 
+                    type: "number"
+                    example: 1234
+                  review: 
+                    type: "string"
+                    example: "bad-2"
+                  name: 
+                    type: "string"
+                    example: "kranti"
+                  createdAt: 
+                    type: "string"
+                    example: "2020-12-20A11:12:52.52GMT+0530"
+  ReviewProductRequest:
+    required:
+      - barcode
+      - review
+      - name
+    type: object
+    properties:
+      barcode:
+        type: number
+        example: 123
+      name:
+        type: string
+        example: 'kranthi'
+      review:
+        type: string
+        example: 'Product is good quality'
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
